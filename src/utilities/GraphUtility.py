@@ -68,8 +68,8 @@ def init_graph(fname):
 
     graph = Graph()
 
-    for line in lines:
-        [parent, child] = line.strip().split(',')
+    for line in lines[:20]:
+        [parent, child, timestamp] = line.strip().split(',')
         graph.add_edge(parent, child)
 
     graph.sort_nodes()
@@ -81,13 +81,17 @@ def hash_graph(fname):
         lines = f.readlines()
       
     num_rows = 2
-    num_buckets = 80
-    m = 9    
+    num_buckets = 100
+    m = 0
+    for line in lines[:10]:
+        [parent, child, timestamp] = line.strip().split(',')
+        m = max(int(parent), int(child))
+        
     cur_count = CMShash(num_rows, num_buckets, m)
 
     nodeList = []
-    for line in lines:
-        [parent, child] = line.strip().split(',')
+    for line in lines[:10]:
+        [parent, child, timestamp] = line.strip().split(',')
         cur_count.insert(int(parent), int(child), 1)
 
         if int(parent) not in nodeList:
